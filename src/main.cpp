@@ -26,7 +26,7 @@ if (Serial.available() > 0) {
     analogWrite(LED_PIN, LED_light); // PWM 밝기 적용
     Serial.println(LED_light); // 적용된 밝기값 반환
   }
-}
+ }
 
   // put your main code here, to run repeatedly:
   // 온도 : temp / 습도 : hum

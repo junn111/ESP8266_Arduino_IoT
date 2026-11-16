@@ -11,22 +11,27 @@ ESP8266을 통해 웹페이지에서 측정값을 실시간으로 확인하는 I
 
 진행 기간: 2026.11.09 ~ 진행 중
 
-## 온습도센서 및 LED 제어 기능
+---
+
+## 온습도 센서 및 LED 제어 기능
 
 ### 1. 프로젝트 개발 환경 및 초기 구성
 
 #### 1.1. 프로젝트 생성 및 개발 환경 설정
 
 - VS Code에서 Arduino의 코드 작성, 컴파일 및 업로드를 진행하기 위해 PlatformIO IDE 확장 프로그램을 설치.
-<img src="images/01.png" alt="PlatformIO IDE 설치 화면" width="600">
+
+<img src="images/01.PNG" alt="PlatformIO IDE 설치 화면" width="600">
 
 
 - PlatformIO의 Project Wizard에서 개발 보드를 Arduino Uno로 선택하고, 프레임워크를 Arduino로 설정하여 프로젝트를 생성.
-<img src="images/02.png" alt="PlatformIO 파일 생성" width="400">
+
+<img src="images/02.PNG" alt="PlatformIO 파일 생성" width="400">
 
 
 - DHT22 센서의 온도 및 습도 데이터를 읽기 위해 Adafruit의 DHT sensor library를 설치.
-<img src="images/03.png" alt="PlatformIO DHT22 라이브러리 설치" width="400">
+
+<img src="images/03.PNG" alt="PlatformIO DHT22 라이브러리 설치" width="400">
 
 
 - platformio.ini에서 DHT sensor library의 등록 상태를 확인하고, Arduino Uno의 시리얼 데이터를 수신하기 위해 통신 속도(monitor_speed)를 9600bps로 설정.
@@ -38,6 +43,7 @@ framework = arduino
 lib_deps = adafruit/DHT sensor library@^1.4.7
 monitor_speed = 9600
 ```
+---
 
 ### 2. 하드웨어 회로 구성 및 센서 연결
 
@@ -51,8 +57,9 @@ monitor_speed = 9600
   - GND → Arduino Uno GND
   - 풀업 저항(10kΩ) → VCC와 DATA 사이 연결
 
-<img src="images/04.png" alt="Arduino Uno와 DHT22 센서 배선도" width="400">
+<img src="images/04.PNG" alt="Arduino Uno와 DHT22 센서 배선도" width="400">
 
+---
 
 ### 3. Arduino 센서 데이터 측정
 
@@ -110,6 +117,7 @@ if (millis() - time_a >= 2000) {
 }
 ```
 
+---
 
 ### 4. LED 제어 기능
 
@@ -156,16 +164,68 @@ if (Serial.available() > 0) {
 }
 ```
 
-<img src="images/05.png" alt="Arduino Uno와 DHT22 및 LED 연결 회로" width="400">
+<img src="images/05.PNG" alt="Arduino Uno와 DHT22 및 LED 연결 회로" width="400">
+
+---
+
+### 5. PL2303 USB UART Board (type A) 실험
+
+#### 5.1. PL2303 USB 연결 및 장치 인식 확인
+
+- PL2303 컴퓨터 USB 포트에 직접 연결 후 PWR 표시등 점등 확인
+
+<img src="images/06.PNG" alt="PL2303 USB 연결 및 PWR 표시등 점등" width="200">
+
+- 장치 관리자 실행, 포트(COM 및 LPT)에 Prolific USB-to-Serial Comm Port (COM숫자)가 있는지 확인
+
+<img src="images/07.PNG" alt="장치 관리자에서 PL2303GS COM 포트 인식 확인" width="400">
+
+- Prolific USB-to-Serial Comm Port (COM숫자)을 더블클릭해서 장치 상태를 확인
+
+<img src="images/08.PNG" alt="PL2303GS 장치 속성 및 정상 작동 상태 확인" width="400">
+
+#### 5.2. PL2303 루프백 실험
+
+- TXD와 RXD를 점퍼선으로 연결
+
+<img src="images/09.PNG" alt="TXD와 RXD만 점퍼선으로 연결" width="400">
+
+1. PL2303을 컴퓨터 USB에 다시 연결
+
+2. VS Code의 PlatformIO(시리얼 모니터) 터미널에서 다음 명령어를 입력하여 해당 COM(숫자) 포트의 시리얼 모니터 실행
+
+   ```powershell
+   pio device monitor --port COM16 --baud 9600 
+   ```
+
+3. TXD와 RXD 점퍼선 연결 여부에 따른 문자열 표시 확인
+
+   - 연결 시: `test01234` 입력 후 터미널에 동일한 문자열 표시
+
+   - 미연결 시: 입력한 문자열이 터미널에 표시되지 않음
+
+   아래는 점퍼선 연결 상태에서 `test01234`를 입력하여 확인한 실제 터미널 출력 결과
+
+<img src="images/10.PNG" alt="TXD와 RXD만 점퍼선으로 연결 후 문자열 표시 확인" height="150">
+
+#### 5.3. PL2303과 ESP8266(ESP-01S) 연결 준비
 
 
-### 5. ESP8266
+---
 
-#### 5.1. ?
+### 6. ESP8266 ESP-01S 실험
 
+#### 6.1. ESP8266 기본 동작 확인
+
+#### 6.2. Wi-Fi 통신 실험
+
+- 
+
+---
 
 ## 웹 브라우저 구현
 
 ### 1. ??
 
 #### 1.1. ?
+
