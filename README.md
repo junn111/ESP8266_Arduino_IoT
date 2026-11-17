@@ -229,3 +229,21 @@ if (Serial.available() > 0) {
 
 #### 1.1. ?
 
+
+
+---
+
+## 프로젝트 디렉터리 및 빌드
+
+이 저장소는 두 개의 독립적인 PlatformIO 프로젝트를 포함합니다.
+
+- `arduino/`: 기존 Arduino Uno 소스, DHT22 센서, LED PWM 코드
+- `esp8266/`: ESP-01S용 PlatformIO 기본 프로젝트 (웹 서버 및 UART 기능 미구현)
+- `docs/troubleshooting.md`: 기존 문제 해결 기록
+- `images/`: 기존 README와 문서에 사용된 이미지
+
+VSCode에서 `arduino/` 또는 `esp8266/` 폴더를 각각 열어 빌드·업로드합니다.
+또는 터미널에서 `pio run -d arduino`, `pio run -d esp8266` 명령을 사용합니다.
+
+> 현재 Arduino 소스는 DHT22를 사용하며, 과제 명세서의 DHT11 및 UART 프로토콜은 아직 구현되지 않았습니다.
+> ESP8266의 보드 설정(`esp01_1m`)은 실제 ESP-01S 모듈 사양을 확인하세요.
