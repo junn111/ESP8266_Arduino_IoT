@@ -130,6 +130,8 @@ if (millis() - time_a >= 2000) {
   - LED 음극(C) → Arduino Uno GND
   - 저항(124옴) → 62옴 저항 2개 직렬 연결
 
+<img src="images/05.PNG" alt="Arduino Uno와 DHT22 및 LED 연결 회로" width="400">
+
 - LED 제어 핀 지정 및 PWM 출력 설정
 ```cpp
 #include <Arduino.h>
@@ -163,8 +165,6 @@ if (Serial.available() > 0) {
   }
 }
 ```
-
-<img src="images/05.PNG" alt="Arduino Uno와 DHT22 및 LED 연결 회로" width="400">
 
 ---
 
@@ -206,16 +206,101 @@ if (Serial.available() > 0) {
 
    아래는 점퍼선 연결 상태에서 `test01234`를 입력하여 확인한 실제 터미널 출력 결과
 
-<img src="images/10.PNG" alt="TXD와 RXD만 점퍼선으로 연결 후 문자열 표시 확인" height="150">
+<img src="images/10.PNG" alt="TXD와 RXD만 점퍼선으로 연결 후 문자열 표시 확인" height="170">
 
 #### 5.3. PL2303과 ESP8266(ESP-01S) 연결 준비
 
+- ESP8266(ESP-01S)의 핀 이름 설명 (아래 이미지 기준)
+
+| 위치 | 왼쪽 핀 | 오른쪽 핀 |
+|---|---|---|
+| 1행 | RX | VCC |
+| 2행 | GPIO0 | RST |
+| 3행 | GPIO2 | CH_EN |
+| 4행 | GND | TX |
+
+- PL2303의 핀 이름 설명 (아래 이미지 기준)
+
+| 위치 | 핀 |
+|---|---|
+| 1행 | VCCIO |
+| 2행 | GND |
+| 3행 | TXD <- |
+| 4행 | RXD -> |
+
+<img src="images/11.PNG" alt="ESP8266과 PL2303 배선도" height="250" width="600">
+
+| 색상 | ESP8266 | PL2303 | 연결 조건 |
+|---|---|---|---|
+| - | GPIO2 | - | 연결하지 않음 |
+| 🟤 | RX | TX | 상시 연결 |
+| 🟡 | TX | RX | 상시 연결 |
+| 🟣 | GPIO0 | - | 펌웨어 업로드 시 파란색 ①과 연결 |
+| 🔴 | RST |  | 리셋 버튼을 누를 때만 연결 |
+| 🟢 | VCC | VCCIO | 상시 연결 |
+| 🟢 | CH_EN | VCCIO | 상시 연결 |
+| 🔵① | GND | - | 펌웨어 업로드 시 보라색 선과 연결 |
+| 🔵② | GND | - | 리셋 버튼을 누를 때만 연결 |
+| 🔵③ | GND | GND | 상시 연결 |
+
+※ 리셋 버튼은 ESP8266의 RST와 GND 사이에 연결하며, 버튼을 누를 때만 두 핀이 연결됩니다. GPIO0은 펌웨어 업로드 시 GND에 연결합니다.
+
+<img src="images/12.PNG" alt="ESP8266과 PL2303 실물 배선도"  width="600">
+
+
+※ ESP8266(ESP-01S)의 핀 구성 및 펌웨어 업로드를 위한 배선 연결 방법은 아래 자료를 참고하여 구성하였습니다.
+
+- [ESP8266(ESP-01, ESP-01S) 개요, 업로드하기](https://thinkanother.tistory.com/19)
 
 ---
 
 ### 6. ESP8266 ESP-01S 실험
 
 #### 6.1. ESP8266 기본 동작 확인
+
+- ESP8266(ESP-01S)의 GPIO2를 출력 핀으로 설정하고, 1초 간격으로 LOW/HIGH 상태를 반복하도록 제어 코드 적용
+
+```cpp
+#include <Arduino.h>
+
+#define RELAY_PIN 2
+
+// ESP8266 웹 서버 및 UART 기능은 향후 구현합니다.
+void setup() {
+  Serial.begin(9600);
+
+  digitalWrite(RELAY_PIN, HIGH);
+  pinMode(RELAY_PIN, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(RELAY_PIN, LOW);
+  Serial.println("Relay ON");
+  delay(1000);
+
+  digitalWrite(RELAY_PIN, HIGH);
+  Serial.println("Relay OFF");
+  delay(1000);
+}
+```
+
+- PlatformIO에서 `pio run -d esp8266` 명령어를 실행하여 펌웨어 빌드 성공 확인
+
+- PL2303 USB-UART 모듈을 이용하여 ESP-01S에 펌웨어 업로드
+
+- `pio run -d esp8266 -t upload --upload-port COM16` 명령어를 실행하여 업로드 및 데이터 검증 성공 확인
+
+- ESP-01S를 릴레이 모듈에 장착하고 Arduino Uno의 5V와 GND를 이용하여 전원 공급
+
+- 릴레이가 작동하지 않아 시리얼 모니터로 ESP-01S의 동작을 확인하였으며, 전원 공급 부족을 원인으로 추정
+
+```
+Relay ON
+Relay OFF
+Relay ON
+Relay OFF
+Relay ON
+```
 
 #### 6.2. Wi-Fi 통신 실험
 
