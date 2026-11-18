@@ -236,7 +236,7 @@ if (Serial.available() > 0) {
 | 🟤 | RX | TX | 상시 연결 |
 | 🟡 | TX | RX | 상시 연결 |
 | 🟣 | GPIO0 | - | 펌웨어 업로드 시 파란색 ①과 연결 |
-| 🔴 | RST |  | 리셋 버튼을 누를 때만 연결 |
+| 🔴 | RST | - | 리셋 버튼을 누를 때만 연결 |
 | 🟢 | VCC | VCCIO | 상시 연결 |
 | 🟢 | CH_EN | VCCIO | 상시 연결 |
 | 🔵① | GND | - | 펌웨어 업로드 시 보라색 선과 연결 |
@@ -288,11 +288,13 @@ void loop() {
 
 - PL2303 USB-UART 모듈을 이용하여 ESP-01S에 펌웨어 업로드
 
-- `pio run -d esp8266 -t upload --upload-port COM16` 명령어를 실행하여 업로드 및 데이터 검증 성공 확인
+- `pio run -d esp8266 -t upload --upload-port COM(숫자)` 명령어를 실행하여 업로드 및 데이터 검증 성공 확인
 
 - ESP-01S를 릴레이 모듈에 장착하고 Arduino Uno의 5V와 GND를 이용하여 전원 공급
 
-- 릴레이가 작동하지 않아 시리얼 모니터로 ESP-01S의 동작을 확인하였으며, 전원 공급 부족을 원인으로 추정
+- 릴레이가 작동하지 않았으나, 시리얼 모니터로 ESP-01S의 동작과 파란색 LED가 1초 간격으로 점멸하는 것을 확인하였으며, 전원 공급 부족을 원인으로 추정
+
+<img src="images/13.PNG" alt="릴레이 파란 LED 점멸 확인" width="200">
 
 ```
 Relay ON
