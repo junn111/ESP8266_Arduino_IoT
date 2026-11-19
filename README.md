@@ -235,11 +235,11 @@ if (Serial.available() > 0) {
 | - | GPIO2 | - | 연결하지 않음 |
 | 🟤 | RX | TX | 상시 연결 |
 | 🟡 | TX | RX | 상시 연결 |
-| 🟣 | GPIO0 | - | 펌웨어 업로드 시 파란색 ①과 연결 |
+| 🟣 | GPIO0 | - | 펌웨어 업로드 전 파란색 ①과 연결, 일반 실행 시 연결 해제 |
 | 🔴 | RST | - | 리셋 버튼을 누를 때만 연결 |
 | 🟢 | VCC | VCCIO | 상시 연결 |
 | 🟢 | CH_EN | VCCIO | 상시 연결 |
-| 🔵① | GND | - | 펌웨어 업로드 시 보라색 선과 연결 |
+| 🔵① | GND | - | 펌웨어 업로드 전 보라색 선과 연결, 일반 실행 시 연결 해제 |
 | 🔵② | GND | - | 리셋 버튼을 누를 때만 연결 |
 | 🔵③ | GND | GND | 상시 연결 |
 
@@ -306,7 +306,75 @@ Relay ON
 
 #### 6.2. Wi-Fi 통신 실험
 
-- 
+ESP8266(ESP-01S)을 AP모드로 설정하여 자체 Wi-Fi 네트워크를 생성하고, HTTP 웹 서버를 통해 스마트폰에서 웹페이지에 접속하는 방식으로 실험을 진행하였다. 별도의 공유기 없이 ESP8266이 직접 Wi-Fi를 제공하며, 스마트폰에서 해당 네트워크에 연결한 후 ESP8266의 IP 주소로 접속하여 통신 동작을 확인하였다.
+
+- ESP8266 Wi-Fi 및 HTTP 웹 서버 라이브러리 추가, Wi-Fi 이름과 비밀번호 설정
+
+```cpp
+#include <Arduino.h>
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
+
+const char* ssid = "ESP8266_TEST";
+const char* password = "********";
+```
+
+- HTTP 웹 서버 객체 생성 및 웹페이지 접속 시 표시할 HTML 문구 설정
+
+```cpp
+ESP8266WebServer server(80);
+
+void handleRoot() {
+  server.send(200, "text/html; charset=utf-8",
+              "<h1>ESP8266 Wi-Fi 통신 성공</h1>"
+              "<p>웹페이지 접속 확인</p>");
+}
+```
+
+- 시리얼 통신 속도 설정 및 ESP8266 자체 Wi-Fi 네트워크 생성
+
+```cpp
+void setup() {
+  Serial.begin(9600);
+
+  WiFi.mode(WIFI_AP);
+  WiFi.softAP(ssid, password);
+```
+
+- 웹페이지 접속 경로 설정 및 HTTP 웹 서버 시작
+
+```cpp
+  server.on("/", handleRoot);
+
+  server.begin();
+  Serial.println("Web server started");
+}
+```
+
+- 웹 브라우저의 HTTP 요청 처리
+
+```cpp
+void loop() {
+  server.handleClient();
+}
+```
+
+- PlatformIO에서 `pio run -d esp8266` 명령어를 실행하여 펌웨어 빌드
+
+- `pio run -d esp8266 -t upload --upload-port COM16` 명령어로 ESP-01S에 펌웨어 업로드
+
+- 업로드 완료 후 GPIO0과 GND 연결선을 제거하고 리셋 버튼을 눌러 일반 실행 모드로 전환
+
+- 스마트폰에서 `ESP8266_TEST` Wi-Fi 연결 및 IP 주소 `192.168.4.2` 할당 확인
+
+- 스마트폰 웹 브라우저에서 `http://192.168.4.1/` 접속 후 HTML 문구 표시 확인
+
+```text
+ESP8266 Wi-Fi 통신 성공
+웹페이지 접속 확인
+```
+
+※ Wi-Fi 비밀번호는 README.md 공개를 위해 마스킹 처리하였다.
 
 ---
 

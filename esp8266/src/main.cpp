@@ -5,7 +5,7 @@
 
 // Wi-Fi 이름 및 비밀번호 설정
 const char* ssid = "ESP8266_TEST";
-const char* password = "01234567";
+const char* password = "********";
 
 // 웹 서버 설정
 ESP8266WebServer server(80);
@@ -29,6 +29,7 @@ void setup() {
 
   // 웹 서버 시작
   server.begin();
+  Serial.println("Web server started");
 }
 
 void loop() {
