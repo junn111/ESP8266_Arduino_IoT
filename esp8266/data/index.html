@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>ESP8266 Temperature Monitor</title> <!-- 웹페이지 제목 설정 -->
+    <meta charset="UTF-8"> <!-- 문자 인코딩 설정 -->
+</head>
+<body>
+    <h1>ESP8266 Temperature Monitor</h1> <!-- 웹페이지 제목 -->
+    <p>온도: <span id="temperature">--</span>°C</p> <!-- 온도 값을 표시할 요소 --> 
+    <p>습도: <span id="humidity">--</span>%</p> <!-- 습도 값을 표시할 요소 --> 
+
+    <p>LED 밝기: <span id="ledValue">0</span></p> <!-- LED 밝기 값을 표시할 요소 -->
+    <input type="range" id="ledSlider" min="0" max="255" value="0"> <!-- LED 밝기 조절 슬라이더 -->
+    <input type="number" id="ledInput" min="0" max="255" value="0"> <!-- LED 밝기 값을 입력할 수 있는 숫자 입력 필드 -->
+
+    <button id="led_Minus1Button">-1</button> <!-- LED 밝기 1 감소 버튼 -->
+    <button id="led_Minus10Button">-10</button> <!-- LED 밝기 10 감소 버튼 -->
+    <button id="led_Plus1Button">+1</button> <!-- LED 밝기 1 증가 버튼 -->
+    <button id="led_Plus10Button">+10</button> <!-- LED 밝기 10 증가 버튼 -->
+
+    <button id="ledButton">LED 밝기 설정</button> <!-- LED 밝기 설정 버튼 -->
+
+    <script>
+
+        const ledSlider = document.getElementById('ledSlider'); // LED 밝기 조절 슬라이더
+        const ledValue = document.getElementById('ledValue'); // LED 밝기 값을 표시할 요소
+
+        const ledInput = document.getElementById('ledInput'); // LED 밝기 값을 입력할 수 있는 숫자 입력 필드
+        const ledButton = document.getElementById('ledButton'); // LED 밝기 설정 버튼
+
+        ledButton.addEventListener('click', function() { // LED 밝기 설정 버튼 클릭 시 실행되는 이벤트 리스너
+           
+            if (ledInput.value < 0) { // 입력 값이 0보다 작은 경우
+                ledInput.value = 0; // 입력 값을 0으로 설정
+            } else if (ledInput.value > 255) { // 입력 값이 255보다 큰 경우
+                ledInput.value = 255; // 입력 값을 255로 설정
+            }
+            
+            fetch('/led?value=' + ledInput.value) // LED 밝기 값을 ESP8266로 전송
+                .then(response => response.text()) // 응답을 텍스트로 변환
+                .then(data => { // 응답 데이터를 콘솔에 출력
+                    console.log(data); // 서버에서 반환된 메시지를 콘솔에 출력
+                });
+
+            ledSlider.value = ledInput.value; // 슬라이더 값을 입력 값으로 설정
+            ledValue.textContent = ledInput.value; // LED 밝기 값을 표시
+        });
+
+        ledSlider.addEventListener('input', function() { // 슬라이더 값이 변경될 때마다 실행되는 이벤트 리스너
+            ledValue.textContent = this.value; // LED 밝기 값을 표시
+            
+        fetch('/led?value=' + ledSlider.value) // LED 밝기 값을 ESP8266로 전송
+            .then(response => response.text()) // 응답을 텍스트로 변환
+            .then(data => { // 응답 데이터를 콘솔에 출력
+                console.log(data); // 서버에서 반환된 메시지를 콘솔에 출력
+            });
+        });
+
+        // Fetch temperature data from the ESP8266 
+        function fetchTemperature() { // 온습도 데이터를 가져오는 함수
+            fetch('/temperature')
+                .then(response => response.json()) // 응답을 JSON으로 변환
+                .then(data => {
+                    document.getElementById('temperature').textContent = data.temperature; // 온도 값을 표시
+                    document.getElementById('humidity').textContent = data.humidity; // 습도 값을 표시
+                });
+        }
+
+        fetchTemperature();
+        // 2초마다 온습도 갱신
+        setInterval(fetchTemperature, 2000); // 2초마다 온습도 데이터를 갱신
+
+    </script>
+</body>
+</html>

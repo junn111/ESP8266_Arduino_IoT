@@ -37,6 +37,7 @@ if (Serial.available() > 0) {
   float temp = dht.readTemperature();
 
   if (isnan(temp)) {
+    Serial.print("TEMP:");
     Serial.println("온도 측정 실패");
     return;
   }
@@ -45,13 +46,16 @@ if (Serial.available() > 0) {
   float hum = dht.readHumidity();
 
   if (isnan(hum)) {
+    Serial.print("HUM:");
     Serial.println("습도 측정 실패");
     return;
   }
 
   // 결과 출력
+  Serial.print("TEMP:");
   Serial.println(temp); // 온도 
-
+  
+  Serial.print("HUM:");
   Serial.println(hum); // 습도 
 
   }
