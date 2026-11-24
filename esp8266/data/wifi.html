@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ESP8266 Wi-Fi Setup</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Wi-Fi 설정</h1>
+    <form id="wifiForm">
+        <label for="ssid">SSID:</label>
+        <input type="text" id="ssid" name="ssid" required><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        <button type="submit">설정</button>
+
+    </form>
+
+    <p id="status"></p>
+    <p>Wi-Fi 상태: <span id="wifiStatus">연결되지 않음</span></p>
+
+    <p>연결된 Wi-Fi: <span id="wifiSSID">--</span></p>
+
+    <p>IP 주소: <span id="ipAddress">--</span></p>
+
+    <a href="/">메인 페이지로 이동</a>
+
+    <script>
+        const wifiForm = document.getElementById('wifiForm');
+        const status = document.getElementById('status');
+        const wifiStatus = document.getElementById('wifiStatus');
+        const wifiSSID = document.getElementById('wifiSSID');
+        const ipAddress = document.getElementById('ipAddress');
+
+        // Wi-Fi 상태 업데이트
+        function updateWiFiStatus() {
+            fetch('/wifi_status')
+                .then(response => response.json())
+                .then(data => {
+                    wifiStatus.textContent = data.status;
+                    wifiSSID.textContent = data.ssid;
+                    ipAddress.textContent = data.ip;
+                })
+                .catch(error => {
+                    console.error('Error fetching Wi-Fi status:', error);
+                });
+        }
+
+        // 페이지 로드 시 Wi-Fi 상태 업데이트
+        updateWiFiStatus();
+        setInterval(updateWiFiStatus, 2000); // 2초마다 Wi-Fi 상태 업데이트
+
+        // Wi-Fi 설정 폼 제출 이벤트 처리
+        wifiForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const ssid = document.getElementById('ssid').value;
+            const password = document.getElementById('password').value;
+
+            fetch('/api/wifi', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ssid: ssid, password: password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                status.textContent = data.message;
+                updateWiFiStatus(); // Wi-Fi 상태 업데이트
+            })
+            .catch(error => {
+                console.error('Error setting Wi-Fi:', error);
+                status.textContent = 'Wi-Fi 설정 중 오류 발생';
+            });
+        });
+
+    </script>
+
+</body>
+</html>

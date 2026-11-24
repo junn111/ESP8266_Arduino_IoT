@@ -29,6 +29,27 @@
         const ledInput = document.getElementById('ledInput'); // LED 밝기 값을 입력할 수 있는 숫자 입력 필드
         const ledButton = document.getElementById('ledButton'); // LED 밝기 설정 버튼
 
+        const ledMinus1Button = document.getElementById('led_Minus1Button'); // LED 밝기 1 감소 버튼
+        const ledMinus10Button = document.getElementById('led_Minus10Button'); // LED 밝기 10 감소 버튼
+        const ledPlus1Button = document.getElementById('led_Plus1Button'); // LED 밝기 1 증가 버튼
+        const ledPlus10Button = document.getElementById('led_Plus10Button'); // LED 밝기 10 증가 버튼
+
+        ledMinus1Button.addEventListener('click', function() { // LED 밝기 1 감소 버튼 클릭 시 실행되는 이벤트 리스너
+            ledInput.value = Math.max(0, parseInt(ledInput.value) - 1); // 입력 값을 1 감소시키되, 최소값은 0으로 설정
+        });
+
+        ledMinus10Button.addEventListener('click', function() { // LED 밝기 10 감소 버튼 클릭 시 실행되는 이벤트 리스너
+            ledInput.value = Math.max(0, parseInt(ledInput.value) - 10); // 입력 값을 10 감소시키되, 최소값은 0으로 설정
+        });
+
+        ledPlus1Button.addEventListener('click', function() { // LED 밝기 1 증가 버튼 클릭 시 실행되는 이벤트 리스너
+            ledInput.value = Math.min(255, parseInt(ledInput.value) + 1); // 입력 값을 1 증가시키되, 최대값은 255로 설정
+        });
+
+        ledPlus10Button.addEventListener('click', function() { // LED 밝기 10 증가 버튼 클릭 시 실행되는 이벤트 리스너
+            ledInput.value = Math.min(255, parseInt(ledInput.value) + 10); // 입력 값을 10 증가시키되, 최대값은 255로 설정
+        });
+
         ledButton.addEventListener('click', function() { // LED 밝기 설정 버튼 클릭 시 실행되는 이벤트 리스너
            
             if (ledInput.value < 0) { // 입력 값이 0보다 작은 경우
