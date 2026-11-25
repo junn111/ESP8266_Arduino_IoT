@@ -21,18 +21,22 @@ ESP8266을 통해 웹페이지에서 측정값을 실시간으로 확인하는 I
 
 <img src="images/01.PNG" alt="PlatformIO IDE 설치 화면" width="600">
 
+<br>
 
 - PlatformIO의 Project Wizard에서 개발 보드를 Arduino Uno로 선택하고, 프레임워크를 Arduino로 설정하여 프로젝트를 생성.
 
 <img src="images/02.PNG" alt="PlatformIO 파일 생성" width="400">
 
+<br>
 
 - DHT22 센서의 온도 및 습도 데이터를 읽기 위해 Adafruit의 DHT sensor library를 설치.
 
 <img src="images/03.PNG" alt="PlatformIO DHT22 라이브러리 설치" width="400">
 
+<br>
 
 - platformio.ini에서 DHT sensor library의 등록 상태를 확인하고, Arduino Uno의 시리얼 데이터를 수신하기 위해 통신 속도(monitor_speed)를 9600bps로 설정.
+
 ```ini
 [env:uno]
 platform = atmelavr
@@ -41,6 +45,7 @@ framework = arduino
 lib_deps = adafruit/DHT sensor library@^1.4.7
 monitor_speed = 9600
 ```
+
 ---
 
 ## 2. 하드웨어 회로 구성 및 센서 연결
@@ -130,6 +135,8 @@ if (millis() - time_a >= 2000) {
 
 <img src="images/05.PNG" alt="Arduino Uno와 DHT22 및 LED 연결 회로" width="400">
 
+<br>
+
 - LED 제어 핀 지정 및 PWM 출력 설정
 ```cpp
 #include <Arduino.h>
@@ -188,6 +195,8 @@ if (Serial.available() > 0) {
 
 <img src="images/09.PNG" alt="TXD와 RXD만 점퍼선으로 연결" width="400">
 
+<br>
+
 1. PL2303을 컴퓨터 USB에 다시 연결
 
 2. VS Code의 PlatformIO(시리얼 모니터) 터미널에서 다음 명령어를 입력하여 해당 COM(숫자) 포트의 시리얼 모니터 실행
@@ -203,6 +212,8 @@ if (Serial.available() > 0) {
    - 미연결 시: 입력한 문자열이 터미널에 표시되지 않음
 
    아래는 점퍼선 연결 상태에서 `test01234`를 입력하여 확인한 실제 터미널 출력 결과
+
+<br>
 
 <img src="images/10.PNG" alt="TXD와 RXD만 점퍼선으로 연결 후 문자열 표시 확인" height="170">
 
@@ -228,6 +239,8 @@ if (Serial.available() > 0) {
 
 <img src="images/11.PNG" alt="ESP8266과 PL2303 배선도" height="250" width="600">
 
+<br>
+
 | 색상 | ESP8266 | PL2303 | 연결 조건 |
 |---|---|---|---|
 | - | GPIO2 | - | 연결하지 않음 |
@@ -242,6 +255,8 @@ if (Serial.available() > 0) {
 | 🔵③ | GND | GND | 상시 연결 |
 
 ※ 리셋 버튼은 ESP8266의 RST와 GND 사이에 연결하며, 버튼을 누를 때만 두 핀이 연결됩니다. GPIO0은 펌웨어 업로드 시 GND에 연결합니다.
+
+<br>
 
 <img src="images/12.PNG" alt="ESP8266과 PL2303 실물 배선도"  width="600">
 
@@ -292,7 +307,9 @@ void loop() {
 
 - 릴레이가 작동하지 않았으나, 시리얼 모니터로 ESP-01S의 동작과 파란색 LED가 1초 간격으로 점멸하는 것을 확인하였으며, 전원 공급 부족을 원인으로 추정
 
-<img src="images/13.PNG" alt="릴레이 파란 LED 점멸 확인" width="200">
+<br>
+
+<img src="images/13.PNG" alt="릴레이 파란 LED 점멸 확인" width="250">
 
 ```
 Relay ON
@@ -390,7 +407,11 @@ ESP8266 Wi-Fi 통신 성공
 - LED 밝기를 1 또는 10 단위로 증가·감소시키는 미세 조절 버튼 구성
 - LED 밝기 설정값을 적용하기 위한 설정 버튼 구성
 
-<img src="images/14.PNG" alt="모니터링 페이지" width="400">
+<br>
+
+<img src="images/14.PNG" alt="모니터링 페이지" width="600">
+
+<br>
 
 **Wi-Fi 설정 페이지 (wifi.html)**
 
@@ -401,7 +422,27 @@ ESP8266 Wi-Fi 통신 성공
 - Wi-Fi 설정 결과 및 오류 메시지 표시 영역 구성
 - 온습도 모니터링 페이지로 이동하기 위한 링크 구성
 
-<img src="images/15.PNG" alt="설정 페이지" width="400">
+<br>
+
+<img src="images/15.PNG" alt="설정 페이지" width="600">
+
+<br>
+
+**ArduinoJson 라이브러리 설치**
+
+JSON 데이터 분석, SSID 및 비밀번호 추출, JSON 응답 생성 기능을 위한 라이브러리
+
+- PIO Home에서 platformio.ini 파일이 위치한 esp8266 프로젝트 폴더 열기
+
+<img src="images/16.PNG" alt="PlatformIO 프로젝트 폴더 열기" width="600">
+
+<br>
+
+- PlatformIO Libraries에서 ArduinoJson 라이브러리 검색 및 ESP8266 프로젝트에 추가
+
+<img src="images/17.PNG" alt="ArduinoJson 라이브러리 추가" width="600">
+
+<br>
 
 ### 7.2. JavaScript 기반 웹페이지 기능 구현
 
