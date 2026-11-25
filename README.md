@@ -409,7 +409,7 @@ ESP8266 Wi-Fi 통신 성공
 
 <br>
 
-<img src="images/14.PNG" alt="모니터링 페이지" width="600">
+<img src="images/15.PNG" alt="모니터링 페이지" width="600">
 
 <br>
 
@@ -424,7 +424,7 @@ ESP8266 Wi-Fi 통신 성공
 
 <br>
 
-<img src="images/15.PNG" alt="설정 페이지" width="600">
+<img src="images/14.PNG" alt="설정 페이지" width="600">
 
 <br>
 
