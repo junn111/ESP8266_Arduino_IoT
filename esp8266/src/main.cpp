@@ -4,6 +4,13 @@
 #include <LittleFS.h> // LittleFS 파일 시스템 라이브러리 포함
 #include <ArduinoJson.h> // ArduinoJson 라이브러리 포함
 
+ // 연결 정보 저장
+String sta_password = "";
+String sta_ssid = "";
+
+bool wifiConfigChanged = false; // Wi-Fi 설정 변경 여부 확인 변수
+unsigned long lastWiFiAttempt = 0; // 마지막 Wi-Fi 연결 시도 시간 저장
+
  // Wi-Fi 설정 
 void handleWiFi()
 {
@@ -63,6 +70,20 @@ void handleWiFiSettings() {
     return;
   }
 
+   // SSID가 비어 있는 경우 처리
+  if (doc["ssid"].as<String>().isEmpty()) {
+    server.send(400, "application/json; charset=utf-8", "{\"message\": \"SSID가 비어 있습니다.\"}");
+    return; 
+  }
+
+   // SSID 및 비밀번호 추출
+  sta_ssid = doc["ssid"];
+  sta_password = doc["password"];
+
+  wifiConfigChanged = true; // Wi-Fi 설정 변경 여부 표시
+
+  server.send(200, "application/json; charset=utf-8", "{\"message\": \"Wi-Fi 설정 정보가 접수되었습니다.\"}");
+
 }
 
 void setup() {
@@ -81,6 +102,8 @@ void setup() {
   server.on("/wifi", handleWiFi); // Wi-Fi 설정 페이지 접속 처리
   server.on("/wifi_status", handleWiFiStatus); // Wi-Fi 연결 상태 확인 요청 처리
 
+  server.on("/api/wifi", HTTP_POST, handleWiFiSettings); // Wi-Fi 설정 정보 수신 처리
+
    // 웹 서버 시작
   server.begin();
   Serial.println("Web server started"); // 웹 서버 시작 메시지 출력
@@ -90,6 +113,20 @@ void loop() {
 
   // 웹 서버 요청 처리
   server.handleClient();
+
+   // Wi-Fi 설정 변경 시 처리
+  if (wifiConfigChanged == true) {
+    WiFi.disconnect(); // 기존 Wi-Fi 연결 해제
+    WiFi.begin(sta_ssid.c_str(), sta_password.c_str()); // 새로운 Wi-Fi 연결 시도
+    wifiConfigChanged = false; // 설정 변경 여부 초기화
+
+    lastWiFiAttempt = millis(); // 마지막 Wi-Fi 연결 시도 시간 저장
+    if (millis()- lastWiFiAttempt >= 10000) { // 10초 마다 Wi-Fi 연결 상태 확인
+ 
+    }
+
+    
+  }
 
   // Arduino에서 전송한 DHT22 온습도 데이터 수신
   if (Serial.available() > 0) {
@@ -103,6 +140,7 @@ void loop() {
       humidity = data.substring(4).toFloat(); // 습도 값 추출
     }
   }
+
 
 }
 

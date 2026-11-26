@@ -25,23 +25,23 @@
     <a href="/">메인 페이지로 이동</a>
 
     <script>
-        const wifiForm = document.getElementById('wifiForm');
-        const status = document.getElementById('status');
-        const wifiStatus = document.getElementById('wifiStatus');
-        const wifiSSID = document.getElementById('wifiSSID');
-        const ipAddress = document.getElementById('ipAddress');
+        const wifiForm = document.getElementById('wifiForm'); // Wi-Fi 설정 폼
+        const status = document.getElementById('status'); // Wi-Fi 설정 상태를 표시할 요소
+        const wifiStatus = document.getElementById('wifiStatus'); // Wi-Fi 상태를 표시할 요소
+        const wifiSSID = document.getElementById('wifiSSID'); // 연결된 Wi-Fi SSID를 표시할 요소
+        const ipAddress = document.getElementById('ipAddress'); // IP 주소를 표시할 요소
 
         // Wi-Fi 상태 업데이트
         function updateWiFiStatus() {
             fetch('/wifi_status')
                 .then(response => response.json())
                 .then(data => {
-                    wifiStatus.textContent = data.status;
-                    wifiSSID.textContent = data.ssid;
-                    ipAddress.textContent = data.ip;
+                    wifiStatus.textContent = data.status; // Wi-Fi 상태 표시
+                    wifiSSID.textContent = data.ssid; // 연결된 Wi-Fi SSID 표시
+                    ipAddress.textContent = data.ip; // IP 주소 표시
                 })
                 .catch(error => {
-                    console.error('Error fetching Wi-Fi status:', error);
+                    console.error('Error fetching Wi-Fi status:', error); // 오류 발생 시 콘솔에 출력
                 });
         }
 
@@ -51,24 +51,24 @@
 
         // Wi-Fi 설정 폼 제출 이벤트 처리
         wifiForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            const ssid = document.getElementById('ssid').value;
-            const password = document.getElementById('password').value;
+            event.preventDefault(); // 폼 제출 기본 동작 방지
+            const ssid = document.getElementById('ssid').value; // SSID 값 가져오기
+            const password = document.getElementById('password').value; // 비밀번호 값 가져오기
 
             fetch('/api/wifi', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ ssid: ssid, password: password })
+                body: JSON.stringify({ ssid: ssid, password: password }) // Wi-Fi 설정 정보를 JSON 형식으로 전송
             })
-            .then(response => response.json())
+            .then(response => response.json()) // 응답을 JSON으로 변환
             .then(data => {
-                status.textContent = data.message;
+                status.textContent = data.message; // 서버에서 반환된 메시지를 상태 요소에 표시
                 updateWiFiStatus(); // Wi-Fi 상태 업데이트
             })
             .catch(error => {
-                console.error('Error setting Wi-Fi:', error);
+                console.error('Error setting Wi-Fi:', error); // 오류 발생 시 콘솔에 출력
                 status.textContent = 'Wi-Fi 설정 중 오류 발생';
             });
         });
