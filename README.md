@@ -444,10 +444,29 @@ JSON 데이터 분석, SSID 및 비밀번호 추출, JSON 응답 생성 기능�
 
 <br>
 
-### 7.2. JavaScript 기반 웹페이지 기능 구현
+### 7.2. ESP8266 웹 서버 및 웹페이지 연동 코드
+
+**라이브러리 추가 및 웹 서버 설정**
+
+- ESP8266의 Wi-Fi 통신, HTTP 웹 서버 구성, HTML 파일 읽기 및 JSON 데이터 처리를 위한 라이브러리 추가
+
+```cpp
+#include <Arduino.h> // Arduino 기본 기능 사용
+#include <ESP8266WiFi.h> // ESP8266 Wi-Fi 연결 및 AP 설정
+#include <ESP8266WebServer.h> // HTTP 웹 서버 구성 및 요청 처리
+#include <LittleFS.h> // 내부 플래시 메모리의 파일 읽기 및 관리
+#include <ArduinoJson.h> // JSON 데이터 분석 및 생성
+```
+
+- HTTP 통신을 위한 80번 포트의 웹 서버 객체 생성
+
+```cpp
+ESP8266WebServer server(80); // HTTP 요청을 처리하는 웹 서버 객체 생성
+```
 
 
-### 7.3. CSS 기반 웹페이지 디자인
+
+### 7.3. 
 
 
 ---

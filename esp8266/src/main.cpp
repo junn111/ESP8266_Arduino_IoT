@@ -1,9 +1,9 @@
-#include <Arduino.h> // Arduino 라이브러리 포함
-#include <ESP8266WiFi.h> // ESP8266 Wi-Fi 라이브러리 포함 
-#include <ESP8266WebServer.h> // ESP8266 웹 서버 라이브러리 포함
-#include <LittleFS.h> // LittleFS 파일 시스템 라이브러리 포함
-#include <ArduinoJson.h> // ArduinoJson 라이브러리 포함
-#include <EEPROM.h> // EEPROM 라이브러리 포함
+#include <Arduino.h> // Arduino 기본 기능 사용
+#include <ESP8266WiFi.h> // ESP8266 Wi-Fi 연결 및 AP 설정
+#include <ESP8266WebServer.h> // HTTP 웹 서버 구성 및 요청 처리
+#include <LittleFS.h> // 내부 플래시 메모리의 파일 읽기 및 관리
+#include <ArduinoJson.h> // JSON 데이터 분석 및 생성
+#include <EEPROM.h> // EEPROM 읽기 및 쓰기
 
 // 웹 서버 설정
 ESP8266WebServer server(80);
